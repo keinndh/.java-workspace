@@ -17,6 +17,7 @@ public class Fibonacci {
             y = z;
             System.out.print(z + " ");
         }
+        input.close();
     }
-    
 }
+

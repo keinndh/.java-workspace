@@ -1,7 +1,7 @@
 .java Repository
 ----------------------------------------
 
-The repository contains a collection of my Java code completed for school or at home. Each file includes core programming concepts we’ve covered in class.
+This repository contains a collection of my Java code completed for school or at home. Each file includes core programming concepts we’ve covered in class.
 
 Contents:
 ---------

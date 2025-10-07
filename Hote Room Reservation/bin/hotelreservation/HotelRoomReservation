@@ -1,0 +1,870 @@
+/**
+ * Serves as the central controller of the system, coordinating all core functionalities.
+ * This class manages the complete reservation workflow including user input handling,
+ * room lookup and filtering,session tracking, and delegating tasks to supporting classes.
+ * It acts as the entry point for executing user actions and maintaining system flow.
+ * @author Abduljal A. Marajan
+ * @version 1 - April 07, 2025
+ * @version 2 - April 09, 2025
+ * @version 3 - April 21, 2025
+ * @version 4 - April 22, 2025
+ * @version 5 - April 25, 2025
+ * @version 6 - April 28, 2025
+ * @version 7 - April 29, 2025
+ * 
+ */
+
+package hotelreservation;
+
+import java.util.*; // Import necessary classes for input and data structures
+import java.util.regex.Matcher; // Import regex Matcher class for pattern
+import java.util.regex.Pattern; // Import regex Pattern class for pattern
+
+public class HotelRoomReservation {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in); // Scanner input
+        boolean running = true; // Variable to control the main switch
+        User user = null; // Initialize user as null
+        Pattern pattern; // Expression for validation
+        Matcher matcher; // Matcher for regex validation
+        List<Room> rooms = new ArrayList<>(); // List to store room objects
+        List<Reservation> reservations = new ArrayList<>(); // List to store reservation objects
+        List<Reservation> reservationHistory = new ArrayList<>(); // List to store reservation history objects
+        reservations = new ArrayList<Reservation>(reservationHistory); // Initilaized reservation history
+
+        // Initialize sample rooms
+        initializeRooms(rooms);
+
+        // Start of the program
+        do {
+            // Primary menu
+            clearScreen(); // Clear the screen
+            System.out.println("=== Welcome to Hotel Room Reservation System ===");
+            System.out.println("\n1. Get Started");
+            System.out.println("2. Exit");
+            System.out.print("Please select an option: ");
+            int choice = -1; // Set -1 as a placeholder in the absence of valid inputs
+            try {
+                choice = input.nextInt();
+                input.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid input");
+                input.nextLine();
+                continue;
+            }
+
+            // Delay timer for a more browsing vibe
+            try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+            // Initiiating User class object
+            User newUser = new User();
+
+            switch (choice) {
+                case 1: // Create user account
+                    while (running) { // Loop until the user chooses to exit
+                        // Secondary menu
+                        clearScreen();
+                        System.out.println("=== Sign in/Create an account ===");
+                        System.out.println("\n1. Create an account");
+                        System.out.println("2. Sign in");
+                        System.out.println("3. Guest account (limited access on some features)");
+                        System.out.println("4. Exit the application");
+                        System.out.print("Please select an option: ");
+                        int subChoice = -1;
+                        try { // Try to get the user input
+                            subChoice = input.nextInt();
+                            input.nextLine();
+                        } catch (InputMismatchException e) { // Catch any input mismatch exception
+                            // If the input is not an integer, print an error message and continue the loop
+                            System.out.println("\nInvalid input");
+                            input.nextLine();
+                            continue;
+                        }
+
+                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                        switch (subChoice) {
+                            case 1: // User registration
+                                clearScreen();
+                                System.out.println("=== Create an account ===");
+
+                                while (true) { // Loop until the user successfully creates an account
+                                    String name;
+                                    // Pattern for a valid name
+                                    pattern = Pattern.compile("^[a-zA-Z\\s]+$");
+                                    do {
+                                        // Name validation verification                                        
+                                        System.out.print("\nEnter name: ");
+                                        name = input.nextLine();
+                                        matcher = pattern.matcher(name);
+                                        if (!matcher.matches()) { // Check if the name is valid
+                                            System.out.println("\nInvalid name. Please try again.");
+                                        }
+                                    } while (!matcher.matches());
+                                    newUser.setName(name); // Set the name to the newUser object
+
+                                    String email;
+                                    // Pattern for a valid email
+                                    pattern = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.com$");
+                                    do {
+                                        // Email format verification                                        
+                                        System.out.print("Enter email: ");
+                                        email = input.nextLine();
+                                        matcher = pattern.matcher(email);
+                                        if (!matcher.matches()) { // Check if the email is valid
+                                            System.out.println("\nInvalid email address. Please try again.");
+                                        }
+                                    } while (!matcher.matches());
+                                    newUser.setEmail(email); // Set the email to the newUser object
+
+                                    String phone;
+                                    // Pattern for a valid phone number
+                                    pattern = Pattern.compile("^09\\d{9}$");
+                                    do {
+                                        // Phone number format verification
+                                        System.out.print("Enter phone number (09XXXXXXXXX): ");
+                                        phone = input.nextLine();
+                                        matcher = pattern.matcher(phone);
+                                        if (!matcher.matches() && phone.length() != 11) { // Check if number is valid
+                                            System.out.println("\nInvalid phone number.");
+                                        }
+                                    } while (!matcher.matches() && phone.length() != 11);
+                                    newUser.setPhone(phone); // Set the phone number to the newUser object
+
+                                    String password;
+                                    do {
+                                        // Password length verification
+                                        System.out.print("Enter a password: ");
+                                        password = input.nextLine();
+                                        if (password.length() < 6) { // Check if password is valid
+                                            System.out.println("\nPassword must be at least 6 characters long.");
+                                            System.out.print("Enter a password: ");
+                                        }
+                                    } while (password.length() < 6);
+                                    newUser.setPassword(password); // Set the password to the newUser object
+
+                                    System.out.println("User ID (assigned by the system): " + newUser.getUserID() + "\n"); // Display the user ID assigned by the system
+
+                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                    // Create a user
+                                    newUser.create();
+
+                                    // Set user to the values of sset to newUser 
+                                    user = newUser;
+
+                                    System.out.print("\nPress Enter to continue...");
+                                    input.nextLine();
+                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                    break;
+                                }
+                                break;
+
+                            case 2: // User Login
+                                clearScreen();
+                                System.out.println("=== User Login ==="); // Log in to verify the user account 
+                                while (true) { // Loop until the user successfully logs in
+                                    String email;
+                                    pattern = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.com$");
+                                    do {
+                                        // Email format verification
+                                        System.out.print("\nEnter email: ");
+                                        email = input.nextLine();
+                                        matcher = pattern.matcher(email);
+                                    } while (!matcher.matches());
+
+                                    String password;
+                                    do {
+                                        System.out.print("Enter password: ");
+                                        password = input.nextLine();
+                                    } while (password.length() < 6);
+
+                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                    // Check user if null
+                                    if (user == null) {
+                                        System.out.println("\nThe account was not found. Please create an account first.");
+                                        System.out.print("\nPress Enter to return...");
+                                        input.nextLine();
+                                        break;
+                                    } else if (user.getEmail().equals(email) && user.getPassword().equals(password)) { // Check if the email and password match
+
+                                        // If user is found, proceeds to login
+                                        System.out.println("\nLogging in...\n");
+
+                                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                        user.login(); // Log in the user
+
+                                        while (true) { // Loop until the user chooses to sign out
+                                            clearScreen();
+                                            System.out.println("=== User Dashboard ===");
+                                            if (user != null) {
+                                                System.out.println("Welcome, " + user.getName() + "!");
+                                            }
+                                            
+                                            System.out.println("\n1. Reserve a Room");
+                                            System.out.println("2. View Available Rooms");
+                                            System.out.println("3. View My Reservations");
+                                            System.out.println("4. Reservation Options");
+                                            System.out.println("5. View Profile");
+                                            System.out.println("6. Update Profile");
+                                            System.out.println("7. Change Password");
+                                            System.out.println("8. Sign out");
+                                            System.out.print("Please select an option: ");
+                                            int dashboardChoice = -1;
+                                            try {
+                                                dashboardChoice = input.nextInt();
+                                                input.nextLine();
+                                            } catch (InputMismatchException e) {
+                                                System.out.println("\nInvalid input");
+                                                input.nextLine();
+                                                continue;
+                                            }
+
+                                            try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                            switch (dashboardChoice) {
+                                                case 1: // Reserve a room
+                                                    clearScreen();
+                                                    reserveRoom(user, rooms, reservations, input); // Call the method to reserve a room
+                                                    break;
+
+                                                case 2: // Display list of rooms offered
+                                                    clearScreen();
+                                                    displayAvailableRooms(rooms); // Display available rooms
+                                                    System.out.print("\nPress Enter to return...");
+                                                    input.nextLine();
+                                                    break;
+
+                                                case 3: // Display reservation/s made
+                                                    clearScreen();
+                                                    System.out.println("=== Your Reservations ===");
+                                                    if (reservations.isEmpty()) {
+                                                        System.out.println("\nNo reservations found.");
+                                                    } else {
+                                                        for (Reservation reservation : reservations) { // Loop through each reservation
+                                                            // Display reservation details
+                                                            System.out.println("\nReservation ID: " + reservation.getReservationId());
+                                                            System.out.println("Room Number: " + reservation.getRoom().getRoomNumber());
+                                                            System.out.println("Room Type: " + reservation.getRoom().getRoomType());
+                                                            System.out.println("Check-In Date: " + reservation.getCheckInDate());
+                                                            System.out.println("Check-Out Date: " + reservation.getCheckOutDate());
+                                                            System.out.println("Total Price: $" + reservation.calculateTotal());
+                                                            System.out.println("Status: " + reservation.getStatus());
+                                                            System.out.println("================================================");
+                                                        }
+                                                    }
+                                                    System.out.print("\nPress Enter to return...");
+                                                    input.nextLine();
+                                                    break;
+
+                                                case 4: // Reservation option
+                                                    clearScreen();
+                                                    while (true) {
+                                                        clearScreen();
+                                                        System.out.println("=== Reservation Options ===");
+                                                        System.out.println("\n1. Cancel Reservation");
+                                                        System.out.println("2. Complete Reservation");
+                                                        System.out.println("3. View Reservation History");
+                                                        System.out.println("4. Back");
+                                                        System.out.print("Please select an option: ");
+                                                        int reservationChoice = -1;
+                                                        try {
+                                                            reservationChoice = input.nextInt();
+                                                            input.nextLine();
+                                                        } catch (InputMismatchException e) {
+                                                            System.out.println("\nInvalid input");
+                                                            input.nextLine();
+                                                            continue;
+                                                        }
+
+                                                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                        switch (reservationChoice) {
+                                                            case 1: // Cancel a reservation
+                                                                clearScreen();
+                                                                System.out.print("\nEnter reservation ID to cancel: ");
+                                                                String cancelReservationId = input.nextLine();
+                                                                Reservation cancelReservation = null; // Initialize cancelReservation to null
+                                                                
+                                                                // Loop through the reservations to find the one to cancel
+                                                                for (Reservation cancel : reservations) { // Search for the reservation to cancel
+                                                                    if (cancel.getReservationId().equals(cancelReservationId)) {
+                                                                        cancelReservation = cancel;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                
+                                                                // If the reservation is found, cancel it
+                                                                if (cancelReservation != null) {
+
+                                                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                                                    
+                                                                    cancelReservation.cancelReservation(); // Mark the reservation as canceled
+                                                                    reservations.remove(cancelReservation); // Remove the reservation from the active list
+                                                                    reservationHistory.add(cancelReservation); // Add it to the reservation history
+                                                                } else {
+                                                                    System.out.println("\nReservation ID not found. Please check the inputted ID.");
+                                                                }
+                                                                System.out.print("\nPress Enter to return...");
+                                                                input.nextLine();
+                                                                break;
+
+                                                            case 2: // Complete a reservation
+                                                                clearScreen();
+                                                                System.out.print("Enter Reservation ID to complete: ");
+                                                                String completeReservationId = input.nextLine();
+                                                                Reservation completeReservation = null; // Initialize completeReservation to null
+                                                                // Loop thorugh the reservations to find the one to complete
+
+                                                                for (Reservation complete : reservations) { // Search for the reservation to complete
+                                                                    if (complete.getReservationId().equals(completeReservationId)) {
+                                                                        completeReservation = complete;
+                                                                        break;
+                                                                    }
+                                                                }
+
+                                                                if (completeReservation != null) {
+                                                                    
+                                                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                                    completeReservation.completeReservation(); // Mark the reservation as completed
+                                                                    reservations.remove(completeReservation); // Remove the reservation from the active list
+                                                                    reservationHistory.add(completeReservation); // Add it to the reservation history
+                                                                } else {
+                                                                    System.out.println("\nReservation ID not found. Please check the inputted ID.");
+                                                                }
+                                                                System.out.print("\nPress Enter to return...");
+                                                                input.nextLine();
+                                                                break;
+
+                                                            case 3: // View reservation history
+                                                                clearScreen();
+                                                                System.out.println("=== Reservation History ===");
+                                                                if (reservationHistory.isEmpty()) {
+                                                                    System.out.println("\nNo reservation history found.");
+                                                                } else {
+                                                                    for (Reservation history : reservationHistory) {
+                                                                        System.out.println("\nReservation ID: " + history.getReservationId());
+                                                                        System.out.println("Room Number: " + history.getRoom().getRoomNumber());
+                                                                        System.out.println("Room Type: " + history.getRoom().getRoomType());
+                                                                        System.out.println("Check-In Date: " + history.getCheckInDate());
+                                                                        System.out.println("Check-Out Date: " + history.getCheckOutDate());
+                                                                        System.out.println("Total Price: $" + history.calculateTotal());
+                                                                        System.out.println("Status: " + history.getStatus());
+                                                                        System.out.println("================================================");
+                                                                    }
+                                                                }
+                                                                System.out.print("\nPress Enter to return...");
+                                                                input.nextLine();
+                                                                break;
+
+                                                            case 4: // Back
+                                                                System.out.println("\nReturning to the dashboard...");
+                                                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                                                break;
+
+                                                            default: // Handle invalid input
+                                                                System.out.println("Invalid choice. Please try again.");
+                                                                System.out.print("\nPress Enter to return...");
+                                                                input.nextLine();
+                                                        }
+                                                        if (reservationChoice == 4)
+                                                            break;
+                                                    }
+                                                    break;
+
+                                                case 5: // View user profile
+                                                    clearScreen();
+                                                    user.viewProfile();
+                                                    System.out.print("\nPress Enter to return...");
+                                                    input.nextLine();
+                                                    break;
+
+                                                case 6: // Update user profile
+                                                    clearScreen();
+                                                    while (true) {
+                                                        clearScreen();
+                                                        System.out.println("=== Update Profile ===");
+                                                        System.out.println("\nSelect user information to update:");
+                                                        System.out.println("\n1. Name");
+                                                        System.out.println("2. Email");
+                                                        System.out.println("3. Phone Number");
+                                                        System.out.println("4. Back");
+                                                        System.out.print("Please select an option: ");
+                                                        int infoUpdateChoice = -1;
+                                                        try {
+                                                            infoUpdateChoice = input.nextInt();
+                                                            input.nextLine();
+                                                        } catch (InputMismatchException e) {
+                                                            System.out.println("\nInvalid input");
+                                                            input.nextLine();
+                                                            continue;
+                                                        }
+
+                                                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                        switch (infoUpdateChoice) {
+                                                            case 1: // Cancel a reservation
+                                                                clearScreen();
+                                                                String newName;
+                                                                pattern = Pattern.compile("^[a-zA-Z\\s]+$");
+                                                                do {
+                                                                    // Name validation verification   
+                                                                    System.out.println("=== Name Update ===");                                 
+                                                                    System.out.print("\nEnter name: ");
+                                                                    newName = input.nextLine();
+                                                                    matcher = pattern.matcher(newName);
+                                                                    if (!matcher.matches()) {
+                                                                        System.out.println("\nInvalid name. Please try again.");
+                                                                    }
+                                                                } while (!matcher.matches());
+                                                                newUser.setName(newName);
+                                                                
+                                                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                                System.out.println("\nUser name updated successfully.");
+                                                                break;
+
+                                                            case 2:
+                                                                clearScreen();
+                                                                String newEmail;
+                                                                pattern = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.com$");
+                                                                do {
+                                                                    // Email format verification  
+                                                                    System.out.println("=== Email Update ===");                                       
+                                                                    System.out.print("\nEnter email: ");
+                                                                    newEmail = input.nextLine();
+                                                                    matcher = pattern.matcher(newEmail);
+                                                                    if (!matcher.matches()) {
+                                                                        System.out.println("\nInvalid email address. Please try again.");
+                                                                    }
+                                                                } while (!matcher.matches());
+                                                                newUser.setEmail(newEmail);
+
+                                                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                                System.out.println("\nUser email updated successfully.");
+                                                                break;
+
+                                                            case 3:
+                                                                clearScreen();
+                                                                String newPhone;
+                                                                pattern = Pattern.compile("^09\\d{9}$");
+                                                                do {
+                                                                    // Phone number format verification
+                                                                    System.out.println("=== Phone Number Update ==="); 
+                                                                    System.out.print("\nEnter phone number (09XXXXXXXXX): ");
+                                                                    newPhone = input.nextLine();
+                                                                    matcher = pattern.matcher(newPhone);
+                                                                    if (!matcher.matches() && newPhone.length() != 11) {
+                                                                        System.out.println("\nInvalid phone number.");
+                                                                    }
+                                                                } while (!matcher.matches() && newPhone.length() != 11);
+                                                                newUser.setPhone(newPhone);
+
+                                                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                                System.out.println("\nUser phone number updated successfully.");
+                                                                break;
+                                                            
+                                                            default:
+                                                                System.out.println("Invalid choice. Please try again.");
+
+                                                        } if (infoUpdateChoice == 4)
+                                                            break;
+
+                                                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                        clearScreen();
+                                                        user.updateProfile(); // Method to show profile update status
+                                                        System.out.print("\nPress Enter to return...");
+                                                        input.nextLine();
+                                                    }
+                                                    break;
+
+                                                case 7: // Change user password
+                                                    clearScreen();
+                                                    System.out.println("=== Change Password ===");
+                                                    System.out.print("\nEnter currrent password: ");
+                                                    String verificationPassword = input.nextLine();
+
+                                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                                    
+                                                    if (user.getPassword().equals(verificationPassword)) {
+                                                        String newPassword;
+                                                        do {
+                                                            System.out.print("Enter new password: ");
+                                                            newPassword = input.nextLine();
+                                                            if (newPassword.length() < 6) {
+                                                                System.out.println("\nPassword must be at least 6 characters long.");
+                                                            }
+                                                        } while (newPassword.length() < 6);
+                                                        user.setPassword(newPassword);
+
+                                                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                                        clearScreen();
+                                                        System.out.println("\nPassword updated successfully.");
+                                                    } else {
+                                                        System.out.println("\nPassword does not match. Try again");
+                                                    }
+
+                                                    System.out.print("\nPress Enter to return...");
+                                                    input.nextLine();
+                                                    break;
+
+                                                case 8: // Sign out
+                                                    System.out.println("\nSigning out...");
+                                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                                    break;
+
+                                                default:
+                                                    System.out.println("Invalid choice.");
+                                                    System.out.print("\nPress Enter...");
+                                                    input.nextLine();
+                                            }
+                                            if (dashboardChoice == 8)
+                                                break;
+                                        }
+                                        break;
+
+                                    } else {
+                                        System.out.println("\nInvalid email or password or the account was not found. Please try again.");
+                                    }
+                                }
+                                break;
+
+                            case 3: // Guest account with limited features
+                                user = new User();
+                                user.setName("Guest");
+                                System.out.println("\nUsing guest account...");
+                                
+                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                while (true) {
+                                    clearScreen();
+                                    System.out.println("===Guest Dashboard ===");
+                                    System.out.println("Welcome, " + user.getName() + "!");
+                                    System.out.println("\n1. Reserve a Room");
+                                    System.out.println("2. View Available Rooms");
+                                    System.out.println("3. View Profile");
+                                    System.out.println("4. Return");
+                                    System.out.print("Please select an option: ");
+                                    int dashboardChoice = -1;
+                                    try {
+                                        dashboardChoice = input.nextInt();
+                                        input.nextLine();
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("\nInvalid input");
+                                        input.nextLine();
+                                        continue;
+                                    }
+
+                                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                                    switch (dashboardChoice) {
+                                        case 1: // Guest: Reserve a room
+                                            clearScreen();
+                                            System.out.println("Cannot reserve a room.\nPlease create an account or log in to your account.");
+                                            System.out.print("\nPress Enter to return...");
+                                            input.nextLine();
+                                            break;
+
+                                        case 2: // Guets: Display list of rooms offered
+                                            clearScreen();
+                                            displayAvailableRooms(rooms);
+                                            System.out.print("\nPress Enter to return...");
+                                            input.nextLine();
+                                            break;
+
+                                        case 3: // Guest: View profile
+                                            clearScreen();
+                                            user.guessProfile();
+                                            System.out.print("\nPress Enter to return...");
+                                            input.nextLine();
+                                            break;
+
+                                        case 4: // Guest: Return to secondary menu
+                                            System.out.println("\nPlease wait a moment...");
+                                            try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                            break;
+
+                                        default:
+                                            System.out.println("Invalid choice.");
+                                            System.out.print("\nPress Enter...");
+                                            input.nextLine();
+                                    }
+                                    if (dashboardChoice == 4)
+                                        break;
+                                }
+                                break;
+
+                            case 4: // Exit application
+                                System.out.println("\nExiting the application...");
+                                try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                running = false; // Ends the running time
+                                clearScreen();
+                                System.out.println("Thank you for using the Hotel Room Reservation System!");
+                                break;
+
+                            default:
+                                System.out.println("\nInvalid choice. Please try again.");
+                        }
+                    }
+                    break;
+
+                case 2: // Exit application and end the program
+                    clearScreen();
+                    try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                    System.out.println("Thank you for using the Hotel Room Reservation System!");
+                    running = false; // Ends the running time
+                    break;
+
+                default:
+                    System.out.println("\nInvalid choice. Please try again.");
+            }
+        } while (running); // Condition to continue running time
+    }
+
+    // Method to initialize sample rooms
+    private static void initializeRooms(List<Room> rooms) {
+        Room room1 = new Room();
+        room1.setRoomId("R001");
+        room1.setRoomNumber("101");
+        room1.setRoomType("Single");
+        room1.setPricePerNight(100.0);
+        room1.setAvailable(true);
+
+        Room room2 = new Room();
+        room2.setRoomId("R002");
+        room2.setRoomNumber("102");
+        room2.setRoomType("Double");
+        room2.setPricePerNight(150.0);
+        room2.setAvailable(false); // Assuming this room is already reserved
+
+        Room room3 = new Room();
+        room3.setRoomId("R003");
+        room3.setRoomNumber("103");
+        room3.setRoomType("Suite");
+        room3.setPricePerNight(200.0);
+        room3.setAvailable(true);
+
+        Room room4 = new Room();
+        room4.setRoomId("R004");
+        room4.setRoomNumber("104");
+        room4.setRoomType("Deluxe");
+        room4.setPricePerNight(250.0);
+        room4.setAvailable(false); // Assuming this room is already reserved
+
+        Room room5 = new Room();
+        room5.setRoomId("R005");
+        room5.setRoomNumber("105");
+        room5.setRoomType("Family");
+        room5.setPricePerNight(300.0);
+        room5.setAvailable(true);
+
+        // Add the initialized rooms to the list of rooms
+        rooms.add(room1);
+        rooms.add(room2);
+        rooms.add(room3);
+        rooms.add(room4);
+        rooms.add(room5);
+    }
+
+    // Method to display available rooms
+    private static void displayAvailableRooms(List<Room> rooms) {
+        System.out.println("== Hotel Room Reservation ==");
+        System.out.println("\nRoom Number  | Room Type | Price per Night  | Availability");
+        for (Room room : rooms) {
+            if (room.checkAvailability()) {
+                System.out.printf("%-12s | %-9s | $%-15.2f | Available%n",
+                    room.getRoomNumber(), room.getRoomType(), room.getPricePerNight()); // Display available rooms in table format
+            }
+        }
+    }
+
+    // Method to clear the console screen (platform-dependent). This was referred on github
+    private static void clearScreen() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error clearing screen: " + e.getMessage());
+        }
+    }
+
+    // Method to reserve a room
+    private static void reserveRoom(User user, List<Room> rooms, List<Reservation> reservations, Scanner input) {
+        clearScreen();
+        System.out.println("=== Room Reservation ===");
+        System.out.print("\nEnter check-in date (YYYY-MM-DD): ");
+        String checkInDate = input.nextLine();
+        System.out.print("Enter check-out date (YYYY-MM-DD): ");
+        String checkOutDate = input.nextLine();
+        System.out.println();
+
+        // Display available rooms
+        displayAvailableRooms(rooms);
+
+        Room selectedRoom = null; // Initialize selectedRoom outside the loop
+        do {
+            System.out.print("\nEnter the room number to reserve: ");
+            String roomNumber = input.nextLine(); // Get the room number from the user
+
+            // Search for the room with the entered room number
+            for (Room room : rooms) {
+                if (room.getRoomNumber().equals(roomNumber) && room.checkAvailability()) {
+                    selectedRoom = room; // Assign the matching room to selectedRoom
+                    break; // Exit the loop once a valid room is found
+                }
+            }
+
+            if (selectedRoom == null) {
+                System.out.println("\nInvalid room number or room is not available. Please try again.");
+            }
+            
+        } while (selectedRoom == null); // Repeat until a valid room is selected
+
+        // Process the reservation
+        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+        Reservation reservation = new Reservation(user, selectedRoom); // Create a new reservation
+        reservation.setCheckInDate(java.sql.Date.valueOf(checkInDate)); // Set the check-in date
+        reservation.setCheckOutDate(java.sql.Date.valueOf(checkOutDate)); // Set the check-out date
+        reservations.add(reservation); // Add the reservation to the list
+        selectedRoom.bookRoom(user, checkInDate, checkOutDate); // Mark the room as booked
+
+        while (true) {
+            System.out.println("\nSelect payment method: ");
+            System.out.println("\n1. Credit/Debit Card ");
+            System.out.println("2. Mobile Wallets");
+            System.out.print("Please select an option: ");
+            int payChoice = -1;
+            try {
+                payChoice = input.nextInt();
+                input.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid input");
+                input.nextLine();
+                continue;
+            }
+
+            try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+            switch (payChoice) {
+                case 1: // Credit/Debit type of payment
+                    clearScreen();
+                    System.out.println("=== Credit/Debit Card Payment ===");
+                
+                    String cardNumber;
+                    Matcher matcher;
+                    String newPhone;
+                    Pattern pattern = Pattern.compile("^(\\d{4} \\d{4} \\d{4} \\d{4})$");
+                    do {
+                        // Card number validation verification  
+                        System.out.print("\nEnter card number (XXXX XXXX XXXX XXXX): ");
+                        cardNumber = input.nextLine();
+                        matcher = pattern.matcher(cardNumber);
+                        if (!matcher.matches() && cardNumber.length() != 19) { // Ensure card number is exactly 19 characters
+                            System.out.println("\nInvalid card number.");
+                        }
+                    } while (!matcher.matches() && cardNumber.length() != 19);
+                    
+                    String cvcNumber;
+                    do {
+                        System.out.print("Enter CVC (XXX): ");
+                        cvcNumber = input.nextLine();
+                        if (cvcNumber.length() != 3) { // Ensure CVC is exactly 3 characters
+                            System.out.println("\nInvalid CVC");
+                        }
+                    } while (cvcNumber.length() != 3);
+
+                    String theName;
+                    pattern = Pattern.compile("^[a-zA-Z\\s]+$");
+                    do {
+                        // Name validation verification                               
+                        System.out.print("Enter name: ");
+                        theName = input.nextLine();
+                        matcher = pattern.matcher(theName);
+                        if (!matcher.matches()) {
+                            System.out.println("\nInvalid name. Please try again.");
+                        }
+                    } while (!matcher.matches());
+                    
+                  // Calculate the total price based on the stay duration
+                    double theAmount;
+                    do {
+                        System.out.println("\nTotal amount (Rooms' price per night * Stay duration = Total amount).");
+                        System.out.print("Enter amount: $");
+                        theAmount = input.nextDouble();
+                        input.nextLine();
+
+                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                        if (reservation.calculateTotal() != theAmount) { // Compare the entered amount with the total price
+                            System.out.println("Amount inputted does not match with the total price. Try again.");
+                        }
+                    } while (reservation.calculateTotal() != theAmount); // Repeat until the correct amount is entered
+
+                    System.out.println("\nPayment successful!");
+                    break;
+                
+                case 2: // Mobile/E-wallet type of payment
+                    clearScreen();
+                    System.out.println("=== Mobile Wallet Payment ===");
+                    String walletNumber;
+                    do {
+                        System.out.print("\nEnter mobile number: ");
+                        walletNumber = input.nextLine();
+                        if (walletNumber.length() != 11) { // Ensure mobile number is exactly 11 characters
+                            System.out.println("\nInvalid mobile number.");
+                        }
+                    } while (walletNumber.length() != 11);
+
+                    String pinNumber;
+                    do {    
+                        System.out.print("Enter pin number: ");
+                        pinNumber = input.nextLine();
+                        if (pinNumber.length() != 4) { // Ensure pin number is exactly 4 characters
+                            System.out.println("\nInvalid pin number.");
+                        }
+                    } while (pinNumber.length() != 4);
+                
+                    // Calculate the total price based on the stay duration
+                    do {
+                        System.out.println("\nTotal amount (Rooms' price per night * Stay duration = Total amount).");
+                        System.out.print("Enter amount: $");
+                        theAmount = input.nextDouble(); 
+                        input.nextLine();
+
+                        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
+                        if (reservation.calculateTotal() != theAmount) { // Compare the entered amount with the total price
+                            System.out.println("Amount inputted does not match with the total price. Try again.");
+                        }
+                    } while (reservation.calculateTotal() != theAmount); // Repeat until the correct amount is entered
+
+                    System.out.println("\nPayment successful!");
+                    break;
+                
+                default:
+                    System.out.println("Invalid input. Try again");
+
+            } if (payChoice == 2 || payChoice == 1)
+                break; // Exit the loop after successful payment
+        }
+
+        try { Thread.sleep(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+    
+        clearScreen();
+        reservation.createReservation(); // Create the reservation
+        System.out.print("\nPress Enter to return...");
+        input.nextLine();
+    }
+}

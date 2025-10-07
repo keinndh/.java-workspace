@@ -16,9 +16,8 @@ public class StackEx {
             System.out.println("3. Pop");
             System.out.println("4. Peek");
             System.out.println("5. Clear");
-            System.out.println("6. Evaluation");
-            System.out.println("7. Check Stack");
-            System.out.println("8. Exit");
+            System.out.println("6. Check Stack");
+            System.out.println("7. Exit");
             System.out.print("\nPlease select an option: ");
             int choice = -1;
             try {
@@ -252,21 +251,6 @@ public class StackEx {
                     break;
                 case 6:
                     clearScreen();
-                    System.out.println("== Evaluation ==\n");
-                    System.out.println("Infix to Postfix Expression Evaluation using Stack");
-                    System.out.println("\nProvide an infix expression (e.g., (A+B)*C): ");
-                    try {
-                        String infix = input.nextLine();
-                        String postfix = infixToPostfix(infix);
-                        System.out.println("Postfix Expression: " + postfix);
-                    } catch (Exception e) {
-                        System.out.println("Error in expression evaluation: " + e.getMessage());
-                    }
-                    System.out.print("\nPress Enter to return...");
-                    input.nextLine();
-                    break;
-                case 7:
-                    clearScreen();
                     System.out.println("== Check Stack ==\n");
                     if (stack.empty() == true)
                         System.out.println("Stack Status: Empty");
@@ -277,7 +261,7 @@ public class StackEx {
                     System.out.print("\nPress Enter to return...");
                     input.nextLine();
                     break;
-                case 8:
+                case 7:
                     System.out.println("\nNow you have learned stacks.");
                     running = false;
                     break;

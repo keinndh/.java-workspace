@@ -27,7 +27,7 @@ This project was developed as part of an **Object-Oriented Programming (OOP)** c
 
 * Abduljal Marajan (keinndh)
 * Jhon Kylle Clarang
-* Rica Mae Mod.
+* Rica Mae Mod
 
 ---
 

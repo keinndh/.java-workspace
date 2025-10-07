@@ -2,8 +2,8 @@
 /**
  * Write a description of class PersonMain here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Abduljal Marajan
+ * @version 1 (23 - 03 - 2025)
  */
 
 import java.util.Scanner;

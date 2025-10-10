@@ -4,13 +4,7 @@
  * room lookup and filtering,session tracking, and delegating tasks to supporting classes.
  * It acts as the entry point for executing user actions and maintaining system flow.
  * @author Abduljal A. Marajan
- * @version 1 - April 07, 2025
- * @version 2 - April 09, 2025
- * @version 3 - April 21, 2025
- * @version 4 - April 22, 2025
- * @version 5 - April 25, 2025
- * @version 6 - April 28, 2025
- * @version 7 - April 29, 2025
+ * @version 1 - April 29, 2025
  * 
  */
 

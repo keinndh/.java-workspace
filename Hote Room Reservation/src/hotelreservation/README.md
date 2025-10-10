@@ -28,6 +28,7 @@ This project was developed as part of an **Object-Oriented Programming (OOP)** c
 * Abduljal Marajan (keinndh)
 * Jhon Kylle Clarang
 * Rica Mae Mod
+(Western Mindanao State University - Bachelor of Science in Computer Engineering)
 
 ---
 

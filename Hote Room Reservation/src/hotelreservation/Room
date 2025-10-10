@@ -3,8 +3,7 @@
  * This class encapsulates key attributes such as room ID, type, price, capacity, and availability status.
  * It also includes methods for updating room availability, checking booking status, and interacting with reservation data.
  * @author Jhon Kylle C. Clarang
- * @version 1 - April 09 2025
- * @version 2 - April 17, 2025
+ * @version 1 - April 29 2025
  */
 
 package hotelreservation;

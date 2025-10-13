@@ -4,10 +4,10 @@ public class ArrayExam {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         ArrayList<Integer> array = new ArrayList<>();
-        System.out.print("Enter your desire array size (Max of 10) : ");
-        int size = input.nextInt();
+        System.out.print("Enter the number of elements to add (Max of 10) : ");
+        int numberOfElements = input.nextInt();
         System.out.println();
-        for (int i = 0; i < size; i++ ) {
+        for (int i = 0; i < numberOfElements; i++ ) {
             System.out.print("Enter element " + (i + 1) + ": ");
             int elements = input.nextInt();
             array.add(elements);

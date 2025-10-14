@@ -18,8 +18,10 @@ public class ArrayExam {
         int index = input.nextInt();
         System.out.print("\nEnter the new element to add: ");
         int elementToAdd = input.nextInt();
-        if (index >= 0 && index <= array.size() + 1 && array.size() < 10)
+        if (index >= 0 && index <= array.size() + 1 && array.size() < 10) {
             array.add(index, elementToAdd);
-        System.out.print("\nArray elements after update: " + array);
+            System.out.print("\nArray elements after update: " + array);
+        } else
+            System.out.print("Invalid index.");
     }
 }

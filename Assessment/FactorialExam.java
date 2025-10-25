@@ -9,12 +9,9 @@ public class FactorialExam {
         if (number < 0)
             System.out.println("Invalid integer.");
         else {
-            for (int i = 1; i <= number; i++) {
+            for (int i = 1; i <= number; i++)
                 factorial *= i;
-            }
             System.out.println("Factorial of " + number + " is " + factorial);
         }
-
     }
-    
 }

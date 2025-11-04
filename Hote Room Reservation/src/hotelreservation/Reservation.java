@@ -4,7 +4,8 @@
  * check-in/check-out dates, timestamps, and current status. It handles logic related
  * to booking creation, modification, and cancellation.
  * @author Jhon Kylle C. Clarang
- * @version 1 - April 29, 2025
+ * @version 1 - April 29, 2025
+
  */
 
 package hotelreservation;

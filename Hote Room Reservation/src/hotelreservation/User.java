@@ -3,7 +3,8 @@
  * It stores user credentials, personal information, and session-related data.
  * The class also provides methods for authentication, profile updates, and managing the user's interaction history within the system.
  * @author Rica Mae H. Mod
- * @version 1 - April 29, 2025
+ * @version 1 - April 29, 2025
+
  */
 
 package hotelreservation;
